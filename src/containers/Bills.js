@@ -68,7 +68,7 @@ export default class {
             console.log("length", bills.length);
 
             // Filter bills par date
-            const antiChrono = (a, b) => (a.date > b.date ? 1 : -1);
+            const antiChrono = (a, b) => (a.date < b.date ? 1 : -1);
             bills = bills.sort(antiChrono);
 
             return bills;

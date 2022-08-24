@@ -21,9 +21,12 @@ const row = (bill) => {
 };
 
 const rows = (data) => {
-  data.forEach((element) => {
-    element.date = formatDate(new Date(element.date));
-  });
+  if (data) {
+    data.forEach((element) => {
+      element.date = formatDate(new Date(element.date));
+    });
+  }
+
   return data && data.length ? data.map((bill) => row(bill)).join("") : "";
 };
 

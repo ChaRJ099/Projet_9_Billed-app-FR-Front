@@ -122,11 +122,11 @@ describe("Given that I am a user on login page", () => {
     test("Then It should renders Login page", () => {
       document.body.innerHTML = LoginUI();
 
-      const inputEmailUser = screen.getByTestId("admin-email-input");
-      expect(inputEmailUser.value).toBe("");
+      const inputEmailAdmin = screen.getByTestId("admin-email-input");
+      expect(inputEmailAdmin.value).toBe("");
 
-      const inputPasswordUser = screen.getByTestId("admin-password-input");
-      expect(inputPasswordUser.value).toBe("");
+      const inputPasswordAdmin = screen.getByTestId("admin-password-input");
+      expect(inputPasswordAdmin.value).toBe("");
 
       const form = screen.getByTestId("form-admin");
       const handleSubmit = jest.fn((e) => e.preventDefault());
@@ -141,13 +141,13 @@ describe("Given that I am a user on login page", () => {
     test("Then it should renders Login page", () => {
       document.body.innerHTML = LoginUI();
 
-      const inputEmailUser = screen.getByTestId("admin-email-input");
-      fireEvent.change(inputEmailUser, { target: { value: "pasunemail" } });
-      expect(inputEmailUser.value).toBe("pasunemail");
+      const inputEmailAdmin = screen.getByTestId("admin-email-input");
+      fireEvent.change(inputEmailAdmin, { target: { value: "pasunemail" } });
+      expect(inputEmailAdmin.value).toBe("pasunemail");
 
-      const inputPasswordUser = screen.getByTestId("admin-password-input");
-      fireEvent.change(inputPasswordUser, { target: { value: "azerty" } });
-      expect(inputPasswordUser.value).toBe("azerty");
+      const inputPasswordAdmin = screen.getByTestId("admin-password-input");
+      fireEvent.change(inputPasswordAdmin, { target: { value: "azerty" } });
+      expect(inputPasswordAdmin.value).toBe("azerty");
 
       const form = screen.getByTestId("form-admin");
       const handleSubmit = jest.fn((e) => e.preventDefault());
@@ -168,15 +168,15 @@ describe("Given that I am a user on login page", () => {
         status: "connected",
       };
 
-      const inputEmailUser = screen.getByTestId("admin-email-input");
-      fireEvent.change(inputEmailUser, { target: { value: inputData.email } });
-      expect(inputEmailUser.value).toBe(inputData.email);
+      const inputEmailAdmin = screen.getByTestId("admin-email-input");
+      fireEvent.change(inputEmailAdmin, { target: { value: inputData.email } });
+      expect(inputEmailAdmin.value).toBe(inputData.email);
 
-      const inputPasswordUser = screen.getByTestId("admin-password-input");
-      fireEvent.change(inputPasswordUser, {
+      const inputPasswordAdmin = screen.getByTestId("admin-password-input");
+      fireEvent.change(inputPasswordAdmin, {
         target: { value: inputData.password },
       });
-      expect(inputPasswordUser.value).toBe(inputData.password);
+      expect(inputPasswordAdmin.value).toBe(inputData.password);
 
       const form = screen.getByTestId("form-admin");
 

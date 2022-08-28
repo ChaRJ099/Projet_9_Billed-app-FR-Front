@@ -2,7 +2,10 @@
  * @jest-environment jsdom
  */
 
-import { screen, waitFor } from "@testing-library/dom";
+import { fireEvent, screen, waitFor } from "@testing-library/dom";
+import Bills from "../containers/Bills.js";
+import userEvent from "@testing-library/user-event";
+import "@testing-library/jest-dom";
 import NewBill from "../containers/NewBill.js";
 import BillsUI from "../views/BillsUI.js";
 import mockStore from "../__mocks__/store";
@@ -11,7 +14,8 @@ import { ROUTES_PATH } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 
 import router from "../app/Router.js";
-import Bills from "../containers/Bills.js";
+
+jest.mock("../app/store", () => mockStore);
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
@@ -35,12 +39,6 @@ describe("Given I am connected as an employee", () => {
       expect(windowIcon.classList[0]).toEqual("active-icon");
     });
     test("Then bills should be ordered from earliest to latest", () => {
-      // document.body.innerHTML = BillsUI({ data: bills });
-      // const dates = screen
-      //   .queryAllByText(
-      //     /^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i
-      //   )
-      //   .map((a) => a.innerHTML);
       const dates = screen.queryAllByTestId("date").map((a) => a.innerHTML);
       console.log(dates);
 
@@ -49,25 +47,46 @@ describe("Given I am connected as an employee", () => {
       expect(dates).toEqual(datesSorted);
     });
 
-    // describe("When I click on the icon eye", () => {
-    //   test("A modal should open", () => {
-    //     const store = null;
-    //     const bills = new Bills({
-    //       document,
-    //       onNavigate,
-    //       store,
-    //       localStorage: window.localStorage,
-    //     });
-    //     const handleClickIconEye = jest.fn(bills.handleClickIconEye);
-    //     const eye = screen.queryByTestId("icon-eye");
+    describe("Given I am connected as Employee and I am on Bills page", () => {
+      describe("When I click on the icon eye", () => {
+        test("A modal should open", () => {
+          Object.defineProperty(window, "localStorage", {
+            value: localStorageMock,
+          });
+          window.localStorage.setItem(
+            "user",
+            JSON.stringify({
+              type: "Employee",
+            })
+          );
+          document.body.innerHTML = BillsUI({ data: bills });
+          const onNavigate = (pathname) => {
+            document.body.innerHTML = ROUTES({ pathname });
+          };
 
-    //     eye.addEventListener("click", handleClickIconEye);
-    //     userEvent.click(eye);
-    //     // expect(handleClickIconEye).toHaveBeenCalled();
+          const billMock = new Bills({
+            document,
+            onNavigate,
+            store: null,
+            localStorage: window.localStorage,
+          });
 
-    //     const modale = screen.queryByTestId("modaleFileEmployee");
-    //     expect(modale.classList[1]).toEqual("show");
-    //   });
-    // });
+          const handleClickIconEye = jest.fn((eye) => {
+            billMock.handleClickIconEye(eye);
+          });
+          const eyes = screen.getAllByTestId("icon-eye");
+
+          const modale = document.querySelector("#modaleFile");
+          $.fn.modal = jest.fn(() => modale.classList.add("show"));
+          eyes.forEach((eye) => {
+            eye.addEventListener("click", handleClickIconEye(eye));
+            userEvent.click(eye);
+            expect(handleClickIconEye).toHaveBeenCalled();
+          });
+
+          expect(modale).toHaveClass("show");
+        });
+      });
+    });
   });
 });

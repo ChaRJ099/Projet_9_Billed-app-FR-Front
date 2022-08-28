@@ -3,12 +3,15 @@
  */
 
 import { screen, waitFor } from "@testing-library/dom";
+import NewBill from "../containers/NewBill.js";
 import BillsUI from "../views/BillsUI.js";
+import mockStore from "../__mocks__/store";
 import { bills } from "../fixtures/bills.js";
 import { ROUTES_PATH } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 
 import router from "../app/Router.js";
+import Bills from "../containers/Bills.js";
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
@@ -45,5 +48,26 @@ describe("Given I am connected as an employee", () => {
       const datesSorted = [...dates].sort(antiChrono);
       expect(dates).toEqual(datesSorted);
     });
+
+    // describe("When I click on the icon eye", () => {
+    //   test("A modal should open", () => {
+    //     const store = null;
+    //     const bills = new Bills({
+    //       document,
+    //       onNavigate,
+    //       store,
+    //       localStorage: window.localStorage,
+    //     });
+    //     const handleClickIconEye = jest.fn(bills.handleClickIconEye);
+    //     const eye = screen.queryByTestId("icon-eye");
+
+    //     eye.addEventListener("click", handleClickIconEye);
+    //     userEvent.click(eye);
+    //     // expect(handleClickIconEye).toHaveBeenCalled();
+
+    //     const modale = screen.queryByTestId("modaleFileEmployee");
+    //     expect(modale.classList[1]).toEqual("show");
+    //   });
+    // });
   });
 });

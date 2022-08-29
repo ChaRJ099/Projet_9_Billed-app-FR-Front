@@ -1,4 +1,4 @@
-import { ROUTES_PATH } from "../constants/routes.js";
+import { ROUTES, ROUTES_PATH } from "../constants/routes.js";
 import { formatDate, formatStatus } from "../app/format.js";
 import Logout from "./Logout.js";
 
@@ -38,42 +38,46 @@ export default class {
   //Récupère tous les bills
   getBills = () => {
     if (this.store) {
-      return (
-        this.store
-          //quoi
-          .bills()
-          //quoi
-          .list()
-          //quoi
-          .then((snapshot) => {
-            let bills = snapshot.map((doc) => {
-              try {
-                return {
-                  ...doc,
-                  // date: formatDate(doc.date),
-                  date: new Date(doc.date).getTime(),
-                  status: formatStatus(doc.status),
-                };
-              } catch (e) {
-                // if for some reason, corrupted data was introduced, we manage here failing formatDate function
-                // log the error and return unformatted date in that case
-                console.log(e, "for", doc);
-                return {
-                  ...doc,
-                  date: doc.date,
-                  status: formatStatus(doc.status),
-                };
-              }
-            });
-            console.log("length", bills.length);
+      return this.store
+        .bills()
+        .list()
+        .then((snapshot) => {
+          let bills = snapshot.map((doc) => {
+            try {
+              return {
+                ...doc,
+                date: doc.date,
+                status: formatStatus(doc.status),
+              };
+            } catch (e) {
+              // if for some reason, corrupted data was introduced, we manage here failing formatDate function
+              // log the error and return unformatted date in that case
+              console.log(e, "for", doc);
+              return {
+                ...doc,
+                date: doc.date,
+                status: formatStatus(doc.status),
+              };
+            }
+          });
+          console.log("length", bills.length);
 
-            // Filter bills par date
-            const antiChrono = (a, b) => (a.date < b.date ? 1 : -1);
-            bills = bills.sort(antiChrono);
+          // Filter bills par date
+          bills.sort((a, b) => {
+            if (a.date < b.date) {
+              return 1;
+            } else {
+              return -1;
+            }
+          });
 
-            return bills;
-          })
-      );
+          // Applique formatDate après filtre
+          bills.forEach((bill) => {
+            bill.date = formatDate(bill.date);
+          });
+
+          return bills;
+        });
     }
   };
 }

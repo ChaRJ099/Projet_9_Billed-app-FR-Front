@@ -19,11 +19,14 @@ export default class NewBill {
   }
   handleChangeFile = (e) => {
     e.preventDefault();
+    console.log(e);
     const file = this.document.querySelector(`input[data-testid="file"]`)
       .files[0];
+    console.log("file", file);
     const filePath = e.target.value.split(/\\/g);
     const fileExtension = filePath[2].split(".")[1];
-    // Si l'extension du fichier est égal à jpeg OU jpg OU png
+    console.log("fileExtension", fileExtension);
+    // Si l'extension du fichier n'est pas égal à jpeg OU jpg OU png
     if (fileExtension != ("jpg" || "jpeg" || "png")) {
       return (e.target.value = "");
     }
@@ -53,10 +56,10 @@ export default class NewBill {
   };
   handleSubmit = (e) => {
     e.preventDefault();
-    console.log(
-      'e.target.querySelector(`input[data-testid="datepicker"]`).value',
-      e.target.querySelector(`input[data-testid="datepicker"]`).value
-    );
+    // console.log(
+    //   'e.target.querySelector(`input[data-testid="datepicker"]`).value',
+    //   e.target.querySelector(`input[data-testid="datepicker"]`).value
+    // );
     const email = JSON.parse(localStorage.getItem("user")).email;
     const bill = {
       email,
@@ -78,8 +81,8 @@ export default class NewBill {
     };
     this.updateBill(bill);
     this.onNavigate(ROUTES_PATH["Bills"]);
-    console.log("bill.fileUrl");
-    console.log(bill.fileUrl);
+    // console.log("bill.fileUrl");
+    // console.log(bill.fileUrl);
   };
 
   // not need to cover this function by tests

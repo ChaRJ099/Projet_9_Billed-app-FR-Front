@@ -155,11 +155,15 @@ export default class {
     }
 
     bills.forEach((bill) => {
-      $(`#open-bill${bill.id}`).click((e) => {
-        console.log("bill");
-        console.log(bill);
-        return this.handleEditTicket(e, bill, bills);
-      });
+      $(`#open-bill${bill.id}`)
+        // @cha Voir explication avec Yann
+        .off()
+        .on()
+        .click((e) => {
+          console.log("bill");
+          console.log(bill);
+          return this.handleEditTicket(e, bill, bills);
+        });
     });
 
     return bills;

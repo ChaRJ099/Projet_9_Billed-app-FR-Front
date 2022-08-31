@@ -19,47 +19,45 @@ export default class NewBill {
   }
   handleChangeFile = (e) => {
     e.preventDefault();
-    console.log(e);
     const file = this.document.querySelector(`input[data-testid="file"]`)
       .files[0];
-    console.log("file", file);
-    const filePath = e.target.value.split(/\\/g);
-    const fileExtension = filePath[2].split(".")[1];
-    console.log("fileExtension", fileExtension);
-    // Si l'extension du fichier n'est pas égal à jpeg OU jpg OU png
-    if (fileExtension != ("jpg" || "jpeg" || "png")) {
-      return (e.target.value = "");
+
+    // const fileName = filePath[filePath.length - 1];
+    const fileName = file.name;
+    const fileExtension = fileName.substring(fileName.lastIndexOf("."));
+    const champFile = document.querySelector(`input[data-testid="file"]`);
+
+    /* Si l'extension du fichier est égale à jpeg OU jpg OU png */
+    if (this.isGoodFileExt(fileExtension)) {
+      console.log("Le format est valide");
+      champFile.setCustomValidity("");
+      const formData = new FormData();
+      const email = JSON.parse(localStorage.getItem("user")).email;
+      formData.append("file", file);
+      formData.append("email", email);
+      this.store
+        .bills()
+        .create({
+          data: formData,
+          headers: {
+            noContentType: true,
+          },
+        })
+        .then(({ fileUrl, key }) => {
+          this.billId = key;
+          this.fileUrl = fileUrl;
+          this.fileName = fileName;
+        })
+        .catch((error) => console.error(error));
+    } else {
+      /* Si le format n'est pas valide on enlève l'avertissement et on valide */
+      console.log("Le format doit être JPG, JPEG ou PNG");
+      champFile.setCustomValidity("Le format doit être JPG, JPEG ou PNG");
     }
-
-    const fileName = filePath[filePath.length - 1];
-    const formData = new FormData();
-    const email = JSON.parse(localStorage.getItem("user")).email;
-    formData.append("file", file);
-    formData.append("email", email);
-
-    this.store
-      .bills()
-      .create({
-        data: formData,
-        headers: {
-          noContentType: true,
-        },
-      })
-      .then(({ fileUrl, key }) => {
-        console.log("fileUrl");
-        console.log(fileUrl);
-        this.billId = key;
-        this.fileUrl = fileUrl;
-        this.fileName = fileName;
-      })
-      .catch((error) => console.error(error));
   };
+
   handleSubmit = (e) => {
     e.preventDefault();
-    // console.log(
-    //   'e.target.querySelector(`input[data-testid="datepicker"]`).value',
-    //   e.target.querySelector(`input[data-testid="datepicker"]`).value
-    // );
     const email = JSON.parse(localStorage.getItem("user")).email;
     const bill = {
       email,
@@ -81,8 +79,6 @@ export default class NewBill {
     };
     this.updateBill(bill);
     this.onNavigate(ROUTES_PATH["Bills"]);
-    // console.log("bill.fileUrl");
-    // console.log(bill.fileUrl);
   };
 
   // not need to cover this function by tests
@@ -95,6 +91,16 @@ export default class NewBill {
           this.onNavigate(ROUTES_PATH["Bills"]);
         })
         .catch((error) => console.error(error));
+    }
+  };
+
+  isGoodFileExt = (fileExtension) => {
+    console.log("fileExtension");
+    console.log(fileExtension);
+    if (fileExtension == (".jpg" || ".jpeg" || ".png")) {
+      return true;
+    } else {
+      return false;
     }
   };
 }
